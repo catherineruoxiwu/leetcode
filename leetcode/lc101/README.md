@@ -2,7 +2,7 @@
 
 # Greedy
 
-455. Assign Cookies
+### 455. Assign Cookies
 ```cpp
 // sort & compare
 class Solution {
@@ -19,7 +19,7 @@ public:
 };
 ```
 
-135. Candy
+### 135. Candy
 ```cpp
 class Solution {
 public:
@@ -40,7 +40,7 @@ public:
 };
 ```
 
-435. Non-overlapping Intervals
+### 435. Non-overlapping Intervals
 ```cpp
 class Solution {
     static bool sortByEnd(vector<int>& a, vector<int>& b) {
@@ -68,7 +68,7 @@ public:
 };
 ```
 
-605. Can Place Flowers
+### 605. Can Place Flowers
 ```cpp
 class Solution {
 public:
@@ -87,7 +87,7 @@ public:
 };
 ```
 
-452. Minimum Number of Arrows to Burst Balloons
+### 452. Minimum Number of Arrows to Burst Balloons
 ```cpp
 class Solution {
 public:
@@ -111,8 +111,9 @@ public:
 };
 ```
 
-763. Partition Labels
+### 763. Partition Labels
 ```cpp
+// Solution 1: calculate intervals & merge
 class Solution {
 public:
     vector<int> partitionLabels(string s) {
@@ -128,11 +129,12 @@ public:
         sort(record.begin(), record.end(), [](pair<int, int>& a, pair<int, int>& b) {
             return a.first < b.first;
         });
-        // skip
+        // skip the letters that did not appear
         int i = 0;
         while (record[i].first == -1) {
             ++i;
         }
+        // merge intervals
         int start = record[i].first, end = record[i].second;
         ++i;
         vector<int> res;
@@ -147,6 +149,29 @@ public:
             ++i;
         }
         res.push_back(end - start + 1);
+        return res;
+    }
+};
+
+// Solution 2: only keep track of the last appearances
+class Solution {
+public:
+    vector<int> partitionLabels(string s) {
+        vector<int> lastApperance(26, 0);
+        vector<int> res;
+        // track the last appearance of a certain character
+        for (int i = 0; i < s.size(); ++i) {
+            lastApperance[s[i]-'a'] = i;
+        }
+        int end = 0, lastEnd = -1;
+        for (int i = 0; i < s.size(); ++i) {
+            // essense of the solution
+            end = max(end, lastApperance[s[i]-'a']);
+            if (i == end) {
+                res.push_back(end - lastEnd);
+                lastEnd = i;
+            }
+        }
         return res;
     }
 };
