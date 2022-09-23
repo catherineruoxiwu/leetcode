@@ -1,6 +1,6 @@
-[LeetCode 101](https://github.com/changgyhub/leetcode_101)
+# [LeetCode 101](https://github.com/changgyhub/leetcode_101)
 
-# Greedy
+## Greedy
 
 ### 455. Assign Cookies
 ```cpp
@@ -173,6 +173,46 @@ public:
             }
         }
         return res;
+    }
+};
+```
+
+### 122. Best Time to Buy and Sell Stock II
+```cpp
+// straight forward, one pass
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int ans = 0;
+        for (int i = 1; i < prices.size(); ++i) {
+            if (prices[i] > prices[i-1]) {
+                ans += (prices[i] - prices[i-1]);
+            }
+        }
+        return ans;
+    }
+};
+```
+
+## Two Pointers
+
+### 167. Two Sum II - Input Array Is Sorted
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& numbers, int target) {
+        int i = 0, j = numbers.size() - 1;
+        while (i < j) {
+            int sum = numbers[i] + numbers[j];
+            if (sum == target) {
+                return vector<int>{i + 1, j + 1};
+            } else if (sum < target) {
+                ++i;
+            } else {
+                --j;
+            }
+        }
+        return vector<int>{-1, -1};
     }
 };
 ```
