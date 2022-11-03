@@ -42,7 +42,7 @@ public:
 ```cpp
 class Solution {
     static bool sortByEnd(vector<int>& a, vector<int>& b) {
-        return a[1] < b[1];
+        return a[1] < b[1] || (a[1] == b[1] && a[0] < b[0]>);
     }
 public:
     int eraseOverlapIntervals(vector<vector<int>>& intervals) {
