@@ -25,11 +25,11 @@ public:
         int len = ratings.size();
         // each child must have at least one candy
         vector<int> candies(len, 1);
-        // children with a higher rating get more than their left neighbors
+        // child with a higher rating geta more than their left neighbors
         for (int i = 1; i < len; ++i) {
             if (ratings[i] > ratings[i-1]) candies[i] = candies[i-1] + 1;
         }
-        // children with a higher rating get more than their right neighbors
+        // child with a higher rating geta more than their right neighbors
         for (int i = len - 2; i >= 0; --i) {
             if (ratings[i] > ratings[i+1]) candies[i] = max(candies[i], candies[i+1] + 1);
         }
