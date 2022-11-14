@@ -1,4 +1,4 @@
-# Microsoft SDE Intern Final Round Interview Prep
+# 2022 Fall Sprint I (Targeting Microsoft Final Round)
 
 ## Time Complexity
 ### Common Recurrence Relations
@@ -240,7 +240,7 @@ public:
 ```
 
 ### 42. Trapping Rain Water
-Rain trapped in current index = min(maxRain(0, curIdx), maxRain(curIdx, end)) \\
+Rain trapped in current index = min(maxRain(0, curIdx), maxRain(curIdx, end)) 
 O(n) space, O(n) time
 ```cpp
 class Solution {
@@ -413,12 +413,6 @@ void inorderTraversal(TreeNode* root) {
     }
 }
 ```
-#### Preorder
-```cpp
-```
-#### Postorder
-```cpp
-```
 
 #### By Level
 Iteractive BFS using queue
@@ -566,7 +560,7 @@ public:
             vector<int> curLevel (count);
             for (int i = 0; i < count; ++i) {
                 TreeNode* cur = level.front();
-                curLevel[lToR ? i : count - 1- i] = cur->val;
+                curLevel[lToR ? i : count - 1- i] = cur->val; // Nice!!!
                 if (cur->left) level.push(cur->left);
                 if (cur->right) level.push(cur->right);
                 level.pop();
@@ -597,13 +591,11 @@ public:
 };
 ```
 
-### todo: normal tree
-
 ### 437. Path Sum III
-Best Case: \\
-T(n) = 2 * T(n/2) + O(n) ∈ O(n*log n) \\
-Worst Case: \\
-T(n) = T(n-1) + O(n) ∈ O(n^2) \\
+Best Case: 
+T(n) = 2 * T(n/2) + O(n) ∈ O(n*log n) 
+Worst Case: 
+T(n) = T(n-1) + O(n) ∈ O(n^2) 
 ```cpp
 class Solution {
     int pathSumStartWithRoot(TreeNode* root, long long targetSum) {
@@ -719,9 +711,6 @@ public:
 
 ### 23. Merge k Sorted Lists
 Time O(n log n), Space O(k) with priority queue
-```cpp
-
-```
 Time O(n log n), Space O(1) with divide & conquer
 ```cpp
 class Solution {
@@ -738,6 +727,79 @@ public:
             n = (n + 1) / 2;
         }
         return lists[0];
+    }
+};
+```
+
+### 146. LRU Cache
+HashMap + Doubly Linked List
+```cpp
+struct Node {
+    Node* prev;
+    Node* next;
+    int key;
+    int value;
+    Node() {}
+    Node(int key, int value) : key{key}, value{value} {}
+};
+
+class LRUCache {
+    int capacity;
+    int size;
+    Node* head;
+    Node* tail;
+    unordered_map<int, Node*> hashmap;
+    // helper functions
+    void removeNode(Node* curNode) {
+        Node* prevNode = curNode->prev;
+        Node* nextNode = curNode->next;
+        prevNode->next = nextNode;
+        nextNode->prev = prevNode;
+    }
+    void insertToFront(Node* curNode) {
+        Node* firstNode = head->next;
+        head->next = curNode;
+        curNode->prev = head;
+        curNode->next = firstNode;
+        firstNode->prev = curNode;
+    }
+public:
+    LRUCache(int capacity) : capacity{capacity}
+    , size{0}
+    , head{new Node{}}
+    , tail{new Node{}} {
+        head->next = tail;
+        tail->prev = head;
+    }
+    
+    int get(int key) {
+        if (hashmap.find(key) == hashmap.end()) {
+            return -1;
+        }
+        Node* curNode = hashmap[key];
+        removeNode(curNode);
+        insertToFront(curNode);
+        return hashmap[key]->value;
+    }
+    
+    void put(int key, int value) {
+        Node* curNode;
+        if (hashmap.find(key) == hashmap.end()) {
+            curNode = new Node{key, value};
+            ++size;
+            hashmap.insert({key, curNode}); // faster than hashmap[key] = curNode
+        } else {
+            curNode = hashmap[key];
+            curNode->value = value;
+            removeNode(curNode);
+        }
+        insertToFront(curNode);
+        if (size > capacity) {
+            Node* lastNode = tail->prev;
+            hashmap.erase(lastNode->key); // Don't forget
+            tail = tail->prev; // can be removeNode(tail->prev);
+            --size;
+        }
     }
 };
 ```
@@ -840,17 +902,76 @@ public:
 };
 ```
 
+### 1019. Next Greater Node In Linked List
+Monotonic stack
+```cpp
+class Solution {
+public:
+    vector<int> nextLargerNodes(ListNode* head) {
+        stack<pair<int, int>> s; // [idx, value]
+        vector<int> ans;
+        int i = 0;
+        while(head) {
+            ans.push_back(0);
+            while(!s.empty()) {
+                if (s.top().second < head->val) {
+                    int idx = s.top().first;
+                    ans[idx] = head->val;
+                    s.pop();
+                } else {
+                    break;
+                }
+            }
+            s.push(make_pair(i++, head->val));
+            head = head->next;
+        }
+        return ans;
+    }
+};
+```
+
 ## Math & Bit Manipulations
 
 ### Tricks
 - a ^ a = 0
-- 
+- n = n & (n - 1), remove the last 1 in the number
+- ...
 
 ## C++ Syntax
 
 ### Priority Queues
-
+Min Heap
+```cpp
+priority_queue<int, vector<int>, greater<int>> pq; // elements when greater<int> is true is at the bottom
+```
+Overload with a Comp function
+```cpp
+auto Comp = [](vector<int>& a, vector<int>& b) { return a->val > b->val; }
+priority_queue<vector<int>, vector<vector<int>>, decltype(Comp)> pq(Comp);
+```
+Overload with a struct
+```cpp
+struct Comp {
+    bool operator()(ListNode* l1, ListNode* l2) {
+        return l1->val > l2->val;
+    }
+};
+priority_queue<ListNode*, vector<ListNode*>, Comp> pq;
+```
 ### Sort
+Overload with a lamda
+```cpp
+sort(intervals.begin(), intervals.end(), [](vector<int>& a, vector<int>& b) {
+    return a[0] < b[0];
+});
+``` 
+Overload with a Comp function
+```cpp
+static bool Comp(vector<int>& a, vector<int>& b) {
+    return a[0] < b[0];
+}
+sort(intervals.begin(), intervals.end(), Comp);
+```
 
 ## Resources
 1. [Microsoft Problems](https://leetcode.com/company/microsoft/)
