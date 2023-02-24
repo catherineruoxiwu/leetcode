@@ -1,4 +1,4 @@
-# 2022 Fall Sprint I (Targeting Microsoft Final Round)
+# 2022 Fall Sprint I
 
 ## Time Complexity
 ### Common Recurrence Relations
